@@ -89,8 +89,6 @@
                     return min + Math.floor(Math.random() * (max-min + 1));
                 },
                 attack(index) {
-                    console.group(this.enemies);
-                    console.group(this.enemies[index].pv);
                     const dmg = this.hero.atk - this.enemies[index].def;
                     this.enemies[index].pv -= dmg;
                     if (this.enemies[index].pv <= 0) {
