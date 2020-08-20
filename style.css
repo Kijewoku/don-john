@@ -11,3 +11,9 @@ section > div {
     padding: 20px;
     outline: 1px solid;
 }
+
+.enemy {
+    margin: 5px;
+    padding: 5px;
+    outline: 1px solid red;
+}

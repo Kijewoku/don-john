@@ -34,7 +34,7 @@
                 <div id="room">
                     <h2>Room</h2>
                     <button v-on:click="openTheDoor">Open the door !!!</button>
-                    <div v-for="enemy in enemies">
+                    <div v-for="(enemy, index) in enemies" v-on:click="attack(index)" class="enemy">
                         <h3>{{enemy.name}}</h3>
                         <p>PV: {{enemy.pv}}</p>
                         <p>atk: {{enemy.atk}} - def: {{enemy.def}} - ini: {{enemy.ini}}</p>
@@ -50,7 +50,7 @@
                 title: 'Don John',
                 hero: {
                     name: 'Don John',
-                    level: 3,
+                    level: 1,
                     pv: 0,
                     atk: 0,
                     def: 0,
@@ -66,9 +66,8 @@
                 },
                 openTheDoor: function() {
                     for (let i = 0; i < this.hero.level; i++) {
-                        this.enemies.push(
-                            this.monsters[(Math.random() * this.monsters.length) | 0]
-                        );
+                        const monster = this.monsters[(Math.random() * this.monsters.length) | 0]
+                        this.enemies.push({...monster});
                     }
                 },
                 addMonster: function(name, level, pv, atk, def, ini) {
@@ -78,16 +77,25 @@
                     this.monsters = [];
                     // name, level, pv, atk, def, ini
                     this.addMonster('Goblin', 1, 3, 2, 1, 1);
-                    this.addMonster('Orc', 1, 5, 3, 3, 1);
+                    this.addMonster('Orc', 1, 5, 3, 5, 1);
                 },
                 initHero: function() {
                     this.hero.pv = this.rollDice(1, 20) + 6;
-                    this.hero.atk = this.rollDice(1, 20) + 4;
-                    this.hero.def = this.rollDice(1, 20) + 3;
-                    this.hero.ini = this.rollDice(1, 20) + 1;
+                    this.hero.atk = this.rollDice(1, 6) + 4;
+                    this.hero.def = this.rollDice(1, 6) + 3;
+                    this.hero.ini = this.rollDice(1, 6) + 1;
                 },
                 rollDice: function(min, max) {
                     return min + Math.floor(Math.random() * (max-min + 1));
+                },
+                attack(index) {
+                    console.group(this.enemies);
+                    console.group(this.enemies[index].pv);
+                    const dmg = this.hero.atk - this.enemies[index].def;
+                    this.enemies[index].pv -= dmg;
+                    if (this.enemies[index].pv <= 0) {
+                        this.enemies.splice(index, 1);
+                    }
                 }
             }
         })
