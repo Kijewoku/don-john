@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don John</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>{{title}}</h1>
+        </header>
+        <section>
+            <div>
+                <h3>{{hero.name}}</h3>
+                <p>PV: {{hero.pv}}</p>
+                <p>atk: {{hero.atk}} - def: {{hero.def}} - ini: {{hero.ini}}</p>
+            </div>
+            <div v-for="monster in monsters">
+                <h3>{{monster.name}}</h3>
+                <p>PV: {{monster.pv}}</p>
+                <p>atk: {{monster.atk}} - def: {{monster.def}} - ini: {{monster.ini}}</p>
+            </div>
+        </section>
+        <button v-on:click="start">
+            start
+        </button>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                title: 'Don John',
+                hero: {
+                    name: 'Don John',
+                    pv: 0,
+                    atk: 0,
+                    def: 0,
+                    ini: 0
+                },
+                monsters: []
+            },
+            methods: {
+                start: function() {
+                    this.initHero();
+                    this.initBestiary();
+                },
+                addMonster: function(name, pv, atk, def, ini) {
+                    this.monsters.push({name, pv, atk, def, ini});
+                },
+                initBestiary: function() {
+                    this.monsters = [];
+                    this.addMonster('Goblin', 3, 2, 1, 1);
+                    this.addMonster('Orc', 5, 3, 3, 1);
+                },
+                initHero: function() {
+                    this.hero.pv = this.rollDice(1, 20) + 6;
+                    this.hero.atk = this.rollDice(1, 20) + 4;
+                    this.hero.def = this.rollDice(1, 20) + 3;
+                    this.hero.ini = this.rollDice(1, 20) + 1;
+                },
+                rollDice: function(min, max) {
+                    return min + Math.floor(Math.random() * (max-min + 1));
+                }
+            }
+        })
+    </script>
+</body>
+</html>
