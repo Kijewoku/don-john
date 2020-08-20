@@ -4,28 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Don John</title>
+    <link rel="stylesheet" href="./style.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
     <div id="app">
         <header>
             <h1>{{title}}</h1>
+            <button v-on:click="start">
+                start
+            </button>
         </header>
         <section>
             <div>
-                <h3>{{hero.name}}</h3>
-                <p>PV: {{hero.pv}}</p>
-                <p>atk: {{hero.atk}} - def: {{hero.def}} - ini: {{hero.ini}}</p>
+                <h2>Hero</h2>
+                <div>
+                    <h3>{{hero.name}}</h3>
+                    <p>PV: {{hero.pv}}</p>
+                    <p>atk: {{hero.atk}} - def: {{hero.def}} - ini: {{hero.ini}}</p>
+                </div>
+                <h2>Bestiary</h2>
+                <div v-for="monster in monsters">
+                    <h3>{{monster.name}}</h3>
+                    <p>PV: {{monster.pv}}</p>
+                    <p>atk: {{monster.atk}} - def: {{monster.def}} - ini: {{monster.ini}}</p>
+                </div>
             </div>
-            <div v-for="monster in monsters">
-                <h3>{{monster.name}}</h3>
-                <p>PV: {{monster.pv}}</p>
-                <p>atk: {{monster.atk}} - def: {{monster.def}} - ini: {{monster.ini}}</p>
+            <div>
+                <div id="room">
+                    <h2>Room</h2>
+                    <button v-on:click="openTheDoor">Open the door !!!</button>
+                    <div v-for="enemy in enemies">
+                        <h3>{{enemy.name}}</h3>
+                        <p>PV: {{enemy.pv}}</p>
+                        <p>atk: {{enemy.atk}} - def: {{enemy.def}} - ini: {{enemy.ini}}</p>
+                    </div>
+                </div>
             </div>
         </section>
-        <button v-on:click="start">
-            start
-        </button>
     </div>
     <script>
         var app = new Vue({
@@ -34,25 +50,35 @@
                 title: 'Don John',
                 hero: {
                     name: 'Don John',
+                    level: 3,
                     pv: 0,
                     atk: 0,
                     def: 0,
                     ini: 0
                 },
-                monsters: []
+                monsters: [],
+                enemies: []
             },
             methods: {
                 start: function() {
                     this.initHero();
                     this.initBestiary();
                 },
-                addMonster: function(name, pv, atk, def, ini) {
-                    this.monsters.push({name, pv, atk, def, ini});
+                openTheDoor: function() {
+                    for (let i = 0; i < this.hero.level; i++) {
+                        this.enemies.push(
+                            this.monsters[(Math.random() * this.monsters.length) | 0]
+                        );
+                    }
+                },
+                addMonster: function(name, level, pv, atk, def, ini) {
+                    this.monsters.push({name, level, pv, atk, def, ini});
                 },
                 initBestiary: function() {
                     this.monsters = [];
-                    this.addMonster('Goblin', 3, 2, 1, 1);
-                    this.addMonster('Orc', 5, 3, 3, 1);
+                    // name, level, pv, atk, def, ini
+                    this.addMonster('Goblin', 1, 3, 2, 1, 1);
+                    this.addMonster('Orc', 1, 5, 3, 3, 1);
                 },
                 initHero: function() {
                     this.hero.pv = this.rollDice(1, 20) + 6;
