@@ -11,16 +11,57 @@
     <div id="app">
         <header>
             <h1>{{title}}</h1>
-            <button v-if="!gameStarted" v-on:click="start">start</button>
+            <top-nav 
+                v-bind:game-started="gameStarted"
+                v-on:start-game="start"
+            ></top-nav>
         </header>
         <section v-if="gameStarted">
             <div>
+                <hero
+                    v-bind:hero="hero"
+                ></hero>
+                <bestiary
+                    v-bind:monsters="monsters"
+                ></bestiary>
+            </div>
+            <div>
+                <room
+                    v-bind:enemies="enemies"
+                    v-on:open-the-door="openTheDoor"
+                    v-on:player-attack="playerAttack"
+                ></room>
+            </div>
+        </section>
+    </div>
+    <script>
+        Vue.component('top-nav', {
+            template: '<button v-if="!gameStarted" v-on:click="startGame">start</button>',
+            props: ['game-started'],
+            methods: {
+                startGame: function() {
+                    this.$emit('start-game');
+                }
+            }
+        });
+
+        Vue.component('hero', {
+            template: `
+            <div class="hero">
                 <h2>Hero</h2>
                 <div>
                     <h3>{{hero.name}}</h3>
                     <p>PV: {{hero.pv}}</p>
                     <p>atk: {{hero.atk}} - def: {{hero.def}} - ini: {{hero.ini}}</p>
                 </div>
+            </div>
+            `,
+            props: ['hero']
+        });
+
+        Vue.component('bestiary', {
+            template: `
+            <div class="bestiary">
                 <h2>Bestiary</h2>
                 <div v-for="monster in monsters">
                     <h3>{{monster.name}}</h3>
@@ -28,20 +69,33 @@
                     <p>atk: {{monster.atk}} - def: {{monster.def}} - ini: {{monster.ini}}</p>
                 </div>
             </div>
-            <div>
-                <div id="room">
-                    <h2>Room</h2>
-                    <button v-if="enemies.length === 0" v-on:click="openTheDoor">Open the door !!!</button>
-                    <div v-for="(enemy, index) in enemies" v-on:click="attack(index)" class="enemy">
-                        <h3>{{enemy.name}}</h3>
-                        <p>PV: {{enemy.pv}}</p>
-                        <p>atk: {{enemy.atk}} - def: {{enemy.def}} - ini: {{enemy.ini}}</p>
-                    </div>
+            `,
+            props: ['monsters']
+        });
+
+        Vue.component('room', {
+            template: `
+            <div id="room" class="room">
+                <h2>Room</h2>
+                <button v-if="enemies.length === 0" v-on:click="openTheDoor">Open the door !!!</button>
+                <div v-for="(enemy, index) in enemies" v-on:click="playerAttack(index)" class="enemy">
+                    <h3>{{enemy.name}}</h3>
+                    <p>PV: {{enemy.pv}}</p>
+                    <p>atk: {{enemy.atk}} - def: {{enemy.def}} - ini: {{enemy.ini}}</p>
                 </div>
             </div>
-        </section>
-    </div>
-    <script>
+            `,
+            props: ['enemies'],
+            methods: {
+                openTheDoor: function() {
+                    this.$emit('open-the-door');
+                },
+                playerAttack: function(enemyIndex) {
+                    this.$emit('player-attack', enemyIndex);
+                }
+            }
+        });
+
         var app = new Vue({
             el: '#app',
             data: {
@@ -88,11 +142,11 @@
                 rollDice: function(min, max) {
                     return min + Math.floor(Math.random() * (max-min + 1));
                 },
-                attack(index) {
-                    const dmg = this.hero.atk - this.enemies[index].def;
-                    this.enemies[index].pv -= dmg;
-                    if (this.enemies[index].pv <= 0) {
-                        this.enemies.splice(index, 1);
+                playerAttack(enemyIndex) {
+                    const dmg = this.hero.atk - this.enemies[enemyIndex].def;
+                    this.enemies[enemyIndex].pv -= dmg;
+                    if (this.enemies[enemyIndex].pv <= 0) {
+                        this.enemies.splice(enemyIndex, 1);
                     }
                 }
             }
