@@ -1,5 +1,9 @@
 # don-john
 
+This project exists for two reasons:
+* Allow me to test Vue JS :)
+* Realize a small dungeon game project on web browser :D
+
 ## Project setup
 ```
 npm install
