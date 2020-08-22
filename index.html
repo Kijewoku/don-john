@@ -51,26 +51,57 @@
                 <h2>Hero</h2>
                 <div>
                     <h3>{{hero.name}}</h3>
-                    <p>PV: {{hero.pv}}</p>
-                    <p>atk: {{hero.atk}} - def: {{hero.def}} - ini: {{hero.ini}}</p>
+                    <div v-html="getHeroStatsDescription"></div>
                 </div>
             </div>
             `,
-            props: ['hero']
+            props: ['hero'],
+            computed: {
+                getHeroStatsDescription: function() {
+                    return `
+                        <p>
+                            <b>PV:</b> ${this.hero.pv}
+                        </p>
+                        <p>
+                            <b>Atk:</b> ${this.hero.atk} - <b>Def:</b> ${this.hero.def} - <b>Ini:</b> ${this.hero.ini}
+                        </p>
+                    `;
+                }
+            }
         });
 
         Vue.component('bestiary', {
             template: `
             <div class="bestiary">
                 <h2>Bestiary</h2>
-                <div v-for="monster in monsters">
-                    <h3>{{monster.name}}</h3>
-                    <p>PV: {{monster.pv}}</p>
-                    <p>atk: {{monster.atk}} - def: {{monster.def}} - ini: {{monster.ini}}</p>
-                </div>
+                <monster-card v-for="(monster, index) in monsters"
+                    v-bind:monster="monster"
+                    :key="index"
+                ></monster-card>
             </div>
             `,
-            props: ['monsters']
+            props: ['monsters'],
+            methods: {
+                getMonsterStatCard: function(monster) {
+                    console.log('emi monster', monster)
+                    this.$emit('get-monster-stat-card', monster);
+                }
+            }
+        });
+
+        Vue.component('monster-card', {
+            template: `
+            <div class="monster-card">
+                <h3>{{monster.name}}</h3>
+                <p>
+                    <b>PV:</b> {{monster.pv}}
+                </p>
+                <p>
+                    <b>Atk:</b> {{monster.atk}} - <b>Def:</b> {{monster.def}} - <b>Ini:</b> {{monster.ini}}
+                </p>
+            </div>
+            `,
+            props: ['monster']
         });
 
         Vue.component('room', {
@@ -78,10 +109,11 @@
             <div id="room" class="room">
                 <h2>Room</h2>
                 <button v-if="enemies.length === 0" v-on:click="openTheDoor">Open the door !!!</button>
-                <div v-for="(enemy, index) in enemies" v-on:click="playerAttack(index)" class="enemy">
-                    <h3>{{enemy.name}}</h3>
-                    <p>PV: {{enemy.pv}}</p>
-                    <p>atk: {{enemy.atk}} - def: {{enemy.def}} - ini: {{enemy.ini}}</p>
+                <div v-for="(enemy, index) in enemies" class="enemy">
+                    <monster-card
+                        v-bind:monster="enemy"
+                    ></monster-card>
+                    <button v-on:click="playerAttack(index)">Attack this {{enemy.name}}</button>
                 </div>
             </div>
             `,
