@@ -1,12 +1,14 @@
 <template>
     <div id="room" class="room">
         <h2>Room</h2>
-        <button v-if="enemies.length === 0" v-on:click="openTheDoor">Open the door !!!</button>
+        <button v-if="enemies.length === 0" v-on:click="openTheDoor">
+          Open the door !!!
+        </button>
         <div v-for="(enemy, index) in enemies" v-bind:key="index" class="enemy">
-            <monster-card
-                v-bind:monster="enemy"
-            ></monster-card>
-            <button v-on:click="playerAttack(index)">Attack this {{enemy.name}}</button>
+            <MonsterCard v-bind:monster="enemy"/>
+            <button v-on:click="playerAttack(index)">
+              Attack this {{enemy.name}}
+            </button>
         </div>
     </div>
 </template>
@@ -15,16 +17,31 @@
 import MonsterCard from './MonsterCard.vue';
 
 export default {
-  props: ['enemies'],
+  data() {
+    return {
+      enemies: this.initEnemies(),
+    };
+  },
   components: {
     MonsterCard,
   },
   methods: {
+    initEnemies() {
+      return [];
+    },
     openTheDoor() {
-      this.$emit('open-the-door');
+      for (let i = 0; i < this.$parent.hero.level; i += 1) {
+        const index = Math.floor((Math.random() * this.$parent.monsters.length));
+        const monster = this.$parent.monsters[index];
+        this.enemies.push({ ...monster });
+      }
     },
     playerAttack(enemyIndex) {
-      this.$emit('player-attack', enemyIndex);
+      const dmg = this.$parent.hero.atk - this.enemies[enemyIndex].def;
+      this.enemies[enemyIndex].pv -= dmg;
+      if (this.enemies[enemyIndex].pv <= 0) {
+        this.enemies.splice(enemyIndex, 1);
+      }
     },
   },
 };

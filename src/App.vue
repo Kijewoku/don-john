@@ -6,17 +6,9 @@
       v-on:start-game="start"
     />
     <section v-if="gameStarted">
-    <Hero
-      v-on:init-hero="Object.assign(hero, $event)"
-    />
-    <Bestiary
-      v-on:init-bestiary="monsters = $event"
-    />
-    <Room
-      v-bind:enemies="enemies"
-      v-on:open-the-door="openTheDoor"
-      v-on:player-attack="playerAttack"
-    />
+    <Hero v-on:init-hero="Object.assign(hero, $event)"/>
+    <Bestiary v-on:init-bestiary="monsters = $event"/>
+    <Room/>
     </section>
   </div>
 </template>
@@ -41,29 +33,14 @@ export default {
       gameStarted: false,
       hero: {},
       monsters: [],
-      enemies: [],
     };
   },
   methods: {
     start() {
       this.gameStarted = true;
     },
-    openTheDoor() {
-      for (let i = 0; i < this.hero.level; i += 1) {
-        const index = Math.floor((Math.random() * this.monsters.length));
-        const monster = this.monsters[index];
-        this.enemies.push({ ...monster });
-      }
-    },
     rollDice(min, max) {
       return min + Math.floor(Math.random() * (max - min + 1));
-    },
-    playerAttack(enemyIndex) {
-      const dmg = this.hero.atk - this.enemies[enemyIndex].def;
-      this.enemies[enemyIndex].pv -= dmg;
-      if (this.enemies[enemyIndex].pv <= 0) {
-        this.enemies.splice(enemyIndex, 1);
-      }
     },
   },
 };
