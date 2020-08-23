@@ -21,8 +21,8 @@ export default {
     bus.$on('hero-gain-exp', (pts) => {
       this.hero.exp += pts;
       if (this.hero.exp >= this.hero.nextLevel) {
-        this.hero.exp = 0;
         this.hero.level += 1;
+        this.hero.exp -= this.hero.nextLevel;
         this.hero.nextLevel = Math.round((4 * (this.hero.level ** 3)) / 5);
       }
     });
