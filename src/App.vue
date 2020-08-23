@@ -6,8 +6,8 @@
       v-on:start-game="start"
     />
     <section v-if="gameStarted">
-      <Hero
-      v-bind:hero="hero"
+    <Hero
+      v-on:init-hero="Object.assign(hero, $event)"
     />
     <Bestiary
       v-on:init-bestiary="monsters = $event"
@@ -39,22 +39,13 @@ export default {
     return {
       title: 'Don John',
       gameStarted: false,
-      hero: {
-        name: 'Don John',
-        level: 1,
-        exp: 0,
-        pv: 0,
-        atk: 0,
-        def: 0,
-        ini: 0,
-      },
+      hero: {},
       monsters: [],
       enemies: [],
     };
   },
   methods: {
     start() {
-      this.initHero();
       this.gameStarted = true;
     },
     openTheDoor() {
@@ -63,12 +54,6 @@ export default {
         const monster = this.monsters[index];
         this.enemies.push({ ...monster });
       }
-    },
-    initHero() {
-      this.hero.pv = this.rollDice(1, 20) + 6;
-      this.hero.atk = this.rollDice(1, 6) + 4;
-      this.hero.def = this.rollDice(1, 6) + 3;
-      this.hero.ini = this.rollDice(1, 6) + 1;
     },
     rollDice(min, max) {
       return min + Math.floor(Math.random() * (max - min + 1));
