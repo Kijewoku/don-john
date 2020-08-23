@@ -18,6 +18,7 @@ export default {
   methods: {
     initHero() {
       const hero = {
+        name: 'Don John',
         level: 1,
         pv: this.$parent.rollDice(1, 20) + 6,
         atk: this.$parent.rollDice(1, 6) + 4,
