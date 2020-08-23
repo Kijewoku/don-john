@@ -3,7 +3,7 @@
     <img alt="Vue logo" src="./assets/logo.png">
     <TopNav
       v-bind:game-started="gameStarted"
-      v-on:start-game="start"
+      v-on:start-game="startGame"
     />
     <section v-if="gameStarted">
     <Hero v-on:init-hero="Object.assign(hero, $event)"/>
@@ -36,7 +36,7 @@ export default {
     };
   },
   methods: {
-    start() {
+    startGame() {
       this.gameStarted = true;
     },
     rollDice(min, max) {
