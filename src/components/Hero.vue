@@ -2,24 +2,32 @@
   <div class="hero">
     <h2>Hero</h2>
     <div>
-      <h3>{{hero.name}}</h3>
+      <h3>{{hero.name}} - Level:{{hero.level}} ({{hero.exp}} exp)</h3>
       <div v-html="getHeroStatsDescription"></div>
     </div>
   </div>
 </template>
 
 <script>
+import bus from '../main';
+
 export default {
   data() {
     return {
       hero: this.initHero(),
     };
   },
+  created() {
+    bus.$on('hero-gain-exp', (pts) => {
+      this.hero.exp += pts;
+    });
+  },
   methods: {
     initHero() {
       const hero = {
         name: 'Don John',
         level: 1,
+        exp: 0,
         pv: this.$parent.rollDice(1, 20) + 6,
         atk: this.$parent.rollDice(1, 6) + 4,
         def: this.$parent.rollDice(1, 6) + 3,

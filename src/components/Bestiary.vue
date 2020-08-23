@@ -25,10 +25,10 @@ export default {
       const monsters = [];
 
       monsters.push({
-        name: 'Goblin', level: 1, pv: 3, atk: 2, def: 1, ini: 1,
+        name: 'Goblin', level: 1, pts: 1, pv: 3, atk: 2, def: 1, ini: 1,
       });
       monsters.push({
-        name: 'Orc', level: 1, pv: 5, atk: 3, def: 5, ini: 1,
+        name: 'Orc', level: 1, pts: 3, pv: 5, atk: 3, def: 5, ini: 1,
       });
 
       this.$emit('init-bestiary', monsters);

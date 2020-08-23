@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import bus from '../main';
 import MonsterCard from './MonsterCard.vue';
 
 export default {
@@ -40,6 +41,7 @@ export default {
       const dmg = this.$parent.hero.atk - this.enemies[enemyIndex].def;
       this.enemies[enemyIndex].pv -= dmg;
       if (this.enemies[enemyIndex].pv <= 0) {
+        bus.$emit('hero-gain-exp', this.enemies[enemyIndex].pts);
         this.enemies.splice(enemyIndex, 1);
       }
     },
