@@ -10,7 +10,7 @@
       v-bind:hero="hero"
     />
     <Bestiary
-      v-bind:monsters="monsters"
+      v-on:init-bestiary="monsters = $event"
     />
     <Room
       v-bind:enemies="enemies"
@@ -42,6 +42,7 @@ export default {
       hero: {
         name: 'Don John',
         level: 1,
+        exp: 0,
         pv: 0,
         atk: 0,
         def: 0,
@@ -54,7 +55,6 @@ export default {
   methods: {
     start() {
       this.initHero();
-      this.initBestiary();
       this.gameStarted = true;
     },
     openTheDoor() {
@@ -63,17 +63,6 @@ export default {
         const monster = this.monsters[index];
         this.enemies.push({ ...monster });
       }
-    },
-    addMonster(name, level, pv, atk, def, ini) {
-      this.monsters.push({
-        name, level, pv, atk, def, ini,
-      });
-    },
-    initBestiary() {
-      this.monsters = [];
-      // name, level, pv, atk, def, ini
-      this.addMonster('Goblin', 1, 3, 2, 1, 1);
-      this.addMonster('Orc', 1, 5, 3, 5, 1);
     },
     initHero() {
       this.hero.pv = this.rollDice(1, 20) + 6;

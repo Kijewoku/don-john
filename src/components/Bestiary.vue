@@ -1,10 +1,10 @@
 <template>
     <div class="bestiary">
         <h2>Bestiary</h2>
-        <monster-card v-for="(monster, index) in monsters"
-            v-bind:monster="monster"
-            :key="index"
-        ></monster-card>
+        <MonsterCard
+          v-for="(monster, index) in monsters"
+          v-bind:monster="monster"
+          :key="index"/>
     </div>
 </template>
 
@@ -12,13 +12,27 @@
 import MonsterCard from './MonsterCard.vue';
 
 export default {
-  props: ['monsters'],
+  data() {
+    return {
+      monsters: this.initMonsters(),
+    };
+  },
   components: {
     MonsterCard,
   },
   methods: {
-    getMonsterStatCard(monster) {
-      this.$emit('get-monster-stat-card', monster);
+    initMonsters() {
+      const monsters = [];
+
+      monsters.push({
+        name: 'Goblin', level: 1, pv: 3, atk: 2, def: 1, ini: 1,
+      });
+      monsters.push({
+        name: 'Orc', level: 1, pv: 5, atk: 3, def: 5, ini: 1,
+      });
+
+      this.$emit('init-bestiary', monsters);
+      return monsters;
     },
   },
 };
